@@ -82,6 +82,10 @@ module hw4testbench
 input	   		begintest,	// Triggers start of testing
 output reg 		endtest,	// Raise once test completes
 output reg 		dutpassed,	// Signal test result
+output reg      enablepassed, // 1 if enable works 0 if register is always written to 
+output reg      decoderpassed, // 1 if decoder works, 0 if all registers writen to
+output reg      zeropassed, // 1 if regzero is constant value zero, 0 otherwise
+output reg      readpassed, // 1 if read works, 0 if they do not
 
 // Register File DUT connections
 input[31:0]		ReadData1,
@@ -141,6 +145,78 @@ output reg		Clk
     $display("Test Case 2 Failed");
   end
 
+  // Test Case 3:
+  WriteRegister = 5'd2;
+  WriteData = 32'd20;
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  if(ReadData1 !== 15) begin
+    dutpassed = 0;
+    enablepassed = 0;
+
+    $display("Test Case 3 Failed");
+  end
+ 
+  // Test Case 4:
+  WriteRegister = 5'd2;
+  WriteData = 32'd120;
+  RegWrite = 1;
+  ReadRegister1 = 5'd3;
+  ReadRegister2 = 5'd14;
+  #5 Clk=1; #5 Clk=0;
+
+  if(ReadData1 == 120) begin
+    dutpassed = 0;
+    decoderpassed = 0;
+
+    $display("Test Case 4 Failed");
+  end
+  
+  // Test Case 5:
+  WriteRegister = 5'd2;
+  WriteData = 32'd120;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd0;
+  #5 Clk=1; #5 Clk=0;
+
+  if(ReadData1 !== 0) begin
+    dutpassed = 0;
+    zeropassed = 0;
+
+    $display("Test Case 5 Failed");
+  end
+ 
+  // Test Case 5:
+  WriteRegister = 5'd2;
+  WriteData = 32'd120;
+  RegWrite = 1;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 !== 120)||(ReadData2 !== 120)) begin
+    dutpassed = 0;
+    readpassed = 0;
+
+    $display("Test Case 5 Failed");
+  end
+  
+  WriteRegister = 5'd14;
+  WriteData = 32'd50;
+  RegWrite = 1;
+  ReadRegister1 = 5'd14;
+  ReadRegister2 = 5'd14;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 !== 50)||(ReadData2 !== 50)) begin
+    dutpassed = 0;
+    readpassed = 0;
+
+    $display("Test Case 5 Failed");
+  end
 
   // All done!  Wait a moment and signal test completion.
   #5
