@@ -146,6 +146,8 @@ output reg		Clk
   end
 
   // Test Case 3:
+  // Try to write '20' to register2 with writing disabled, verify with Read
+  // Ports 1 and 2 (fails if registers were written to)
   WriteRegister = 5'd2;
   WriteData = 32'd20;
   RegWrite = 0;
@@ -161,6 +163,8 @@ output reg		Clk
   end
  
   // Test Case 4:
+  // Write '120' to register 2, check register 3 and 14 if they read 2, if so
+          // check fails
   WriteRegister = 5'd2;
   WriteData = 32'd120;
   RegWrite = 1;
@@ -176,7 +180,8 @@ output reg		Clk
   end
   
   // Test Case 5:
-  WriteRegister = 5'd2;
+  // Try to write to reg 0, if it does not read 0 at reg 0 fails check
+  WriteRegister = 5'd0;
   WriteData = 32'd120;
   RegWrite = 1;
   ReadRegister1 = 5'd0;
