@@ -26,12 +26,15 @@ input		Clk		// Clock (Positive Edge Triggered)
  
   // Decoder enables the right register for writing
   decoder1to32 decode(enables, RegWrite, WriteRegister);
+
   // Zero Register
+  // I let the input port (d) just float, not sure if this is best practice or not
   register32zero zeros(.q(registersOut[0]),.d(),.wrenable(enables[0]),.clk(Clk));
   generate
 
   genvar i;
 
+  //Generates the remaining 31 non-zero registers
   for (i=0;i<31;i=i+1)begin
     register32 registers(
     .q(registersOut[i+1]),
